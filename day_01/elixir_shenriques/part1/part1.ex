@@ -1,6 +1,6 @@
 defmodule Advent do
   def e01 do
-    read_file_contents()
+    read_file_contents("../part2/lib/input")
     |> String.split()
     |> Enum.map(&get_line_numbers(&1))
     |> Enum.map(&get_first_and_last_characters(&1))
@@ -8,8 +8,8 @@ defmodule Advent do
     |> Enum.sum()
   end
 
-  defp read_file_contents do
-    {:ok, content} = File.read("../input")
+  defp read_file_contents(input_file) do
+    {:ok, content} = File.read(input_file)
     content
   end
 
