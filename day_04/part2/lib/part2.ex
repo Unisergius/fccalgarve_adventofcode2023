@@ -1,19 +1,30 @@
-defmodule Part1 do
+defmodule Part2 do
   @moduledoc """
-  Documentation for `Part1`.
+  Documentation for `Part2`.
   """
 
   @doc """
-  Scratching cards part 1
+  Scratching cards part 2
 
   ## Examples
   """
   def main do
     get_file_contents("../input")
     |> String.split("\n", trim: true)
-    |> Enum.reduce(0, fn scratchcard, points ->
-      points + get_points_from_scratchcard(scratchcard)
+    |> Enum.reduce(%{"available" => 1, "processed" => 0}, fn scratchcard, number_of_cards ->
+      if number_of_cards["available"] > 0 do
+        %{
+          "available" =>
+            number_of_cards["available"] + get_cards_from_scratchcard(scratchcard) - 1,
+          "processed" => number_of_cards["processed"] + 1
+        }
+      else
+        number_of_cards
+      end
     end)
+  end
+
+  def play_scratch_game(scratchcard_list) do
   end
 
   def get_file_contents(filepath) do
@@ -23,9 +34,7 @@ defmodule Part1 do
     end
   end
 
-  def get_points_from_scratchcard(scratchcard) do
-    IO.puts(scratchcard)
-
+  def get_cards_from_scratchcard(scratchcard) do
     parts =
       String.split(scratchcard, ":")
       |> Enum.at(1)
@@ -33,16 +42,13 @@ defmodule Part1 do
 
     winning = split_numbers(Enum.at(parts, 0))
 
-    num_winning_numbers =
+    num =
       split_numbers(Enum.at(parts, 1))
       |> Enum.reduce(0, fn elem, points ->
         if(is_winning_number(elem, winning), do: 1, else: 0) + points
       end)
 
-    case num_winning_numbers do
-      0 -> 0
-      _ -> Integer.pow(2, num_winning_numbers - 1)
-    end
+    num
   end
 
   def is_winning_number(number, winning_list) do
